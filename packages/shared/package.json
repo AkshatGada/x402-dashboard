@@ -1,0 +1,15 @@
+{
+  "name": "@x402-dashboard/shared",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./types": "./src/types/index.ts"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3"
+  }
+}
+

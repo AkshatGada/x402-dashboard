@@ -1,0 +1,24 @@
+{
+  "name": "x402-dashboard",
+  "version": "1.0.0",
+  "description": "Modern dashboard for sellers to monetize their APIs with x402 protocol on Polygon",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "bun run --parallel dev:api dev:web",
+    "dev:api": "cd apps/api && bun run --hot src/index.ts",
+    "dev:web": "cd apps/web && bun run dev",
+    "build": "bun run build:api && bun run build:web",
+    "build:api": "cd apps/api && bun build src/index.ts --outdir dist --target bun",
+    "build:web": "cd apps/web && bun run build",
+    "db:push": "cd apps/api && bun run db:push",
+    "db:studio": "cd apps/api && bun run db:studio"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3"
+  }
+}
+
