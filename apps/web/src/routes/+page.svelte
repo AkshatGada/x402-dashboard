@@ -1,8 +1,11 @@
 <script lang="ts">
 	import { theme } from '$lib/stores/theme';
+	import { wallet } from '$lib/stores/wallet';
 	import { fade, slide } from 'svelte/transition';
 	import { convertAPI } from '$lib/api/convert';
+	import WalletButton from '$lib/components/WalletButton.svelte';
 	import type { Network } from '@x402-dashboard/shared';
+	import { onMount } from 'svelte';
 	
 	let apiUrl = '';
 	let price = '0.01';
@@ -21,6 +24,11 @@
 		{ value: 'polygon-amoy', label: 'Polygon Amoy (Testnet)' },
 		{ value: 'polygon', label: 'Polygon (Mainnet)' }
 	];
+
+	// Auto-fill payTo when wallet connects
+	$: if ($wallet.address && !payTo) {
+		payTo = $wallet.address;
+	}
 	
 	async function handleConvert() {
 		if (!apiUrl || !price || !payTo) {
@@ -76,22 +84,27 @@
 					</div>
 				</div>
 				
-				<!-- Theme Toggle -->
-				<button
-					on:click={() => theme.toggle()}
-					class="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-all duration-200 hover:scale-105"
-					aria-label="Toggle theme"
-				>
-					{#if $theme === 'light'}
-						<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-						</svg>
-					{:else}
-						<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-						</svg>
-					{/if}
-				</button>
+				<div class="flex items-center space-x-3">
+					<!-- Wallet Button -->
+					<WalletButton />
+					
+					<!-- Theme Toggle -->
+					<button
+						on:click={() => theme.toggle()}
+						class="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-all duration-200 hover:scale-105"
+						aria-label="Toggle theme"
+					>
+						{#if $theme === 'light'}
+							<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+							</svg>
+						{:else}
+							<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+							</svg>
+						{/if}
+					</button>
+				</div>
 			</div>
 		</div>
 	</header>
@@ -184,13 +197,32 @@
 							<div>
 								<label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
 									Payment Address *
+									{#if $wallet.address}
+										<span class="text-xs text-green-600 dark:text-green-400 ml-2">(Connected)</span>
+									{/if}
 								</label>
-								<input
-									type="text"
-									bind:value={payTo}
-									placeholder="0x..."
-									class="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all font-mono text-sm"
-								/>
+								<div class="relative">
+									<input
+										type="text"
+										bind:value={payTo}
+										placeholder="0x..."
+										class="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all font-mono text-sm {payTo === $wallet.address ? 'border-green-500 dark:border-green-500' : ''}"
+										readonly={$wallet.address && payTo === $wallet.address}
+									/>
+									{#if $wallet.address && payTo !== $wallet.address}
+										<button
+											on:click={() => payTo = $wallet.address || ''}
+											class="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-1 text-xs bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 rounded hover:bg-primary-200 dark:hover:bg-primary-900/50 transition-colors"
+										>
+											Use Connected
+										</button>
+									{/if}
+								</div>
+								{#if !$wallet.address}
+									<p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+										Connect your wallet to auto-fill this field
+									</p>
+								{/if}
 							</div>
 						</div>
 						

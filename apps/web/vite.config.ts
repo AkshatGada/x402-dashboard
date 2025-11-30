@@ -13,7 +13,18 @@ export default defineConfig({
     }
   },
   optimizeDeps: {
-    exclude: ['@x402-dashboard/shared']
+    exclude: ['@x402-dashboard/shared'],
+    include: ['buffer', 'process']
+  },
+  define: {
+    global: 'globalThis',
+    'process.env': {}
+  },
+  resolve: {
+    alias: {
+      buffer: 'buffer',
+      process: 'process/browser'
+    }
   }
 });
 

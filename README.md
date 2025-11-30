@@ -16,6 +16,7 @@
 - 🎯 **Simple** - Convert any API to x402-gated in seconds
 - 💾 **Zero Config DB** - SQLite with Drizzle ORM
 - 🔒 **Type-Safe** - Full TypeScript end-to-end
+- 🔐 **Embedded Wallet** - MetaMask Embedded Wallet integration via Web3Auth
 
 ## 🛠 Tech Stack
 
@@ -33,6 +34,7 @@
 ### Prerequisites
 
 - [Bun](https://bun.sh) (v1.0.0+) - Download from https://bun.sh
+- [Web3Auth Account](https://dashboard.web3auth.io/) - For wallet integration
 
 ### Installation
 
@@ -44,7 +46,14 @@ cd x402-dashboard
 # Install dependencies
 bun install
 
+# Set up environment variables
+cd apps/web
+cp .env.example .env
+# Edit .env and add your Web3Auth Client ID
+# Get it from https://dashboard.web3auth.io/
+
 # Start development servers
+cd ../..
 bun run dev
 ```
 
@@ -52,6 +61,17 @@ The dashboard will be available at:
 - **Frontend**: http://localhost:5173
 - **API**: http://localhost:3000
 - **API Docs**: http://localhost:3000/swagger
+
+### Web3Auth Setup
+
+1. Go to [Web3Auth Dashboard](https://dashboard.web3auth.io/)
+2. Create a new project or select existing
+3. Copy your Client ID
+4. Create `apps/web/.env` file:
+   ```bash
+   VITE_WEB3AUTH_CLIENT_ID=your_client_id_here
+   ```
+5. See [ENV_SETUP.md](apps/web/ENV_SETUP.md) for detailed instructions
 
 ## 📖 Usage
 
