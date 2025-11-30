@@ -33,3 +33,4 @@ export interface UpdateSellerRequest {
   routes?: RouteConfig[];
 }
 
+

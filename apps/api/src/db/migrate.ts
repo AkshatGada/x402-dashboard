@@ -32,3 +32,4 @@ db.exec(`
 console.log("✅ Database tables created successfully!");
 db.close();
 
+

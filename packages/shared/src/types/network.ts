@@ -16,3 +16,4 @@ export const NETWORKS: Record<Network, { name: string; chainId: number; isTestne
 
 export const DEFAULT_NETWORK: Network = "polygon-amoy";
 
+

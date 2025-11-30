@@ -25,3 +25,4 @@ export interface RouteConfig {
 // Configuration for multiple routes
 export type RoutesConfig = Record<string, RouteConfig>;
 
+
