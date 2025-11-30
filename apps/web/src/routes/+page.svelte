@@ -3,9 +3,17 @@
 	import { wallet } from '$lib/stores/wallet';
 	import { fade, slide } from 'svelte/transition';
 	import { convertAPI } from '$lib/api/convert';
-	import WalletButton from '$lib/components/WalletButton.svelte';
 	import type { Network } from '@x402-dashboard/shared';
 	import { onMount } from 'svelte';
+	import { browser } from '$app/environment';
+	
+	// Lazy load WalletButton to avoid SSR issues
+	let WalletButton: any = null;
+	if (browser) {
+		import('$lib/components/WalletButton.svelte').then((mod) => {
+			WalletButton = mod.default;
+		});
+	}
 	
 	let apiUrl = '';
 	let price = '0.01';
@@ -86,7 +94,13 @@
 				
 				<div class="flex items-center space-x-3">
 					<!-- Wallet Button -->
-					<WalletButton />
+					{#if browser && WalletButton}
+						<svelte:component this={WalletButton} />
+					{:else if browser}
+						<div class="px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-lg text-sm text-gray-500 dark:text-gray-400">
+							Loading wallet...
+						</div>
+					{/if}
 					
 					<!-- Theme Toggle -->
 					<button

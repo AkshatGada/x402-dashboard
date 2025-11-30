@@ -7,18 +7,18 @@
 	onMount(async () => {
 		theme.init();
 		
-		// Initialize polyfills for Web3Auth
+		// Initialize polyfills for Web3Auth (browser only)
 		if (browser) {
 			try {
 				const { Buffer } = await import('buffer');
-				const process = await import('process/browser');
+				const processModule = await import('process/browser');
 				
 				// @ts-ignore
-				window.Buffer = Buffer;
+				if (!window.Buffer) window.Buffer = Buffer;
 				// @ts-ignore
-				window.process = process;
+				if (!window.process) window.process = processModule;
 				// @ts-ignore
-				window.global = window;
+				if (!window.global) window.global = window;
 			} catch (error) {
 				console.warn('Failed to load polyfills:', error);
 			}

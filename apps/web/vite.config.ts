@@ -1,8 +1,19 @@
 import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vite';
+import { nodePolyfills } from 'vite-plugin-node-polyfills';
 
 export default defineConfig({
-  plugins: [sveltekit()],
+  plugins: [
+    sveltekit(),
+    nodePolyfills({
+      include: ['buffer'],
+      globals: {
+        Buffer: true,
+        global: true,
+        process: false // Don't polyfill process for server-side
+      }
+    })
+  ],
   server: {
     port: 5173,
     proxy: {
@@ -13,18 +24,11 @@ export default defineConfig({
     }
   },
   optimizeDeps: {
-    exclude: ['@x402-dashboard/shared'],
-    include: ['buffer', 'process']
+    exclude: ['@x402-dashboard/shared']
   },
   define: {
     global: 'globalThis',
-    'process.env': {}
-  },
-  resolve: {
-    alias: {
-      buffer: 'buffer',
-      process: 'process/browser'
-    }
+    'process.env': '{}'
   }
 });
 
